@@ -15,8 +15,26 @@ const sessions = new Map();
 const isUrl = (s) => /^https?:\/\/\S+$/i.test(s);
 const hex = (s) => /^#?[0-9a-f]{6}$/i.test(s.trim());
 
+// <#channel-name> -> <#id>, <@&Role Name> -> <@&id>. Real IDs and unknown names are left alone.
+const norm = (n) => n.trim().replace(/^#/, '').toLowerCase();
+export function resolveMentions(guild, text) {
+  if (!text) return text;
+  const swap = (m, n, prefix, pool, key) => {
+    if (/^\d+$/.test(n)) return m;
+    const hit = pool.cache.find((x) => key(x) === norm(n));
+    return hit ? `<${prefix}${hit.id}>` : m;
+  };
+  return text
+    .replace(/<#([^>]+)>/g, (m, n) => swap(m, n, '#', guild.channels, (c) => c.name.toLowerCase()))
+    .replace(/<@&([^>]+)>/g, (m, n) => swap(m, n, '@&', guild.roles, (r) => r.name.toLowerCase()));
+}
+
 function preview(s) {
   const d = { ...s.data };
+  if (s.guild) {   // only description and field values render mentions
+    d.description = resolveMentions(s.guild, d.description);
+    if (d.fields) d.fields = d.fields.map((f) => ({ ...f, value: resolveMentions(s.guild, f.value) }));
+  }
   if (!d.title && !d.description && !d.fields?.length && !d.image && !d.thumbnail && !d.author && !d.footer) d.description = '*(empty embed: use the buttons below)*';
   if (d.color === undefined) d.color = COLORS.gold;
   return new EmbedBuilder(d);
@@ -77,7 +95,7 @@ function parseLink(link) {
 async function create(i) {
   if (!allowed(i.member)) return reply(i, DENIED);
   const ch = i.options.getChannel('channel') || i.channel;
-  const s = { data: { color: COLORS.gold }, channelId: ch.id, channelName: ch.name };
+  const s = { guild: i.guild, data: { color: COLORS.gold }, channelId: ch.id, channelName: ch.name };
   sessions.set(i.user.id, s);
   return i.reply({ ...view(s), ephemeral: true });
 }
@@ -91,7 +109,7 @@ async function edit(i) {
   if (!msg) return reply(i, 'I could not find that message.');
   if (msg.author.id !== i.client.user.id) return reply(i, 'I can only edit embeds that I posted myself.');
   if (!msg.embeds.length) return reply(i, 'That message has no embed.');
-  const s = { data: msg.embeds[0].toJSON(), channelId: ch.id, channelName: ch.name, edit: { channelId: ch.id, messageId: msg.id } };
+  const s = { guild: i.guild, data: msg.embeds[0].toJSON(), channelId: ch.id, channelName: ch.name, edit: { channelId: ch.id, messageId: msg.id } };
   sessions.set(i.user.id, s);
   return i.reply({ ...view(s), ephemeral: true });
 }
@@ -176,7 +194,7 @@ export async function embedModal(i) {
     } catch (err) { return bad(`Invalid embed JSON: ${err.message}`); }
   }
   try {
-    const e = preview({ data: d });
+    const e = preview({ data: d, guild: s.guild });
     e.toJSON();
     if (e.length > 6000) throw new Error('Embeds are limited to 6000 characters in total.');
   } catch (err) {
