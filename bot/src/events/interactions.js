@@ -3,6 +3,7 @@ import {
 } from 'discord.js';
 import { ROLE_GROUPS } from '../config.js';
 import { commands } from '../lib/commands.js';
+import { embedButton, embedModal } from '../commands/embed.js';
 import { opButtons, opEmbed } from '../commands/operations.js';
 import { data, save } from '../lib/store.js';
 import { atLeast, embed, findRole, reply } from '../lib/util.js';
@@ -92,12 +93,15 @@ export default async function interactionCreate(i) {
       await roleMenu(i, i.customId.slice(3));
     } else if (i.isButton()) {
       const [ns, a, b] = i.customId.split(':');
-      if (ns === 'op') await rsvp(i, a, b);
+      if (ns === 'emb') await embedButton(i);
+      else if (ns === 'op') await rsvp(i, a, b);
       else if (ns === 'ins' && a === 'request') await i.showModal(insModal());
       else if (ns === 'ins' && a === 'claim') await insClaim(i, b);
       else if (ns === 'ins' && a === 'close') await insClose(i, b);
     } else if (i.isModalSubmit() && i.customId === 'ins:modal') {
       await insCreate(i);
+    } else if (i.isModalSubmit() && i.customId.startsWith('emb:')) {
+      await embedModal(i);
     }
   } catch (e) {
     console.error(`Interaction error (${i.commandName || i.customId}):`, e);
