@@ -13,7 +13,7 @@ Discord bot for the Children of Salusa Dune: Awakening guild. It matches the rol
 | Roles | `/panel roles` posts select menus for House, Path, Platform, Playstyle and Pings. Persistent across restarts. |
 | Instructors | `/panel instructor` posts a button in `#request-an-instructor`. It opens a thread, pings Burseg, with Claim and Close. |
 | Operations | `/operation create` (Captain+) posts a sign-up with Attending/Maybe/Can't buttons in the right channel (expedition-orders, raid-planning, drill-sessions, operations-calendar), pings the matching ping role, creates a Discord scheduled event and reminds attendees 15 min before. `/operation list`, `/operation cancel`. |
-| Embeds | `/embed create` opens a live-preview builder (buttons and forms for text, colour, author, footer, images, fields, JSON import). `/embed edit` changes an embed the bot posted. Burseg+. |
+| Embeds | `/embed create` opens a live-preview builder (buttons and forms for text, colour, author, footer, images, fields, JSON import). `/embed edit` changes an embed the bot posted. Server owner and Supreme Bashar only. |
 | Reset | `/reset` shows the next weekly reset (Tuesday 05:00 Europe/Berlin, same as the website). |
 | Moderation | `/kick` `/ban` `/unban` `/timeout` `/untimeout` `/warn` `/warnings` `/delwarn` `/purge` `/slowmode`. Case numbers, `#mod-log` entries, 3 warnings = 1 h timeout. Role hierarchy is enforced. |
 | AutoMod | `/automod` creates native Discord rules: invite links, mention spam, spam content. Staff from Burseg up are exempt. |

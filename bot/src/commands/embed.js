@@ -3,7 +3,11 @@ import {
   TextInputBuilder, TextInputStyle, PermissionFlagsBits as PF,
 } from 'discord.js';
 import { COLORS } from '../config.js';
-import { atLeast, reply } from '../lib/util.js';
+import { reply } from '../lib/util.js';
+
+// Server owner or the Supreme Bashar role only
+const allowed = (m) => m.id === m.guild.ownerId || m.roles.cache.some((r) => r.name === 'Supreme Bashar');
+const DENIED = 'Only the server owner and the Supreme Bashar can use the embed editor.';
 
 // One editing session per user, kept in memory (a restart ends open sessions).
 const sessions = new Map();
@@ -71,7 +75,7 @@ function parseLink(link) {
 }
 
 async function create(i) {
-  if (!atLeast(i.member, 'Burseg')) return reply(i, 'Only a Burseg or higher can build embeds.');
+  if (!allowed(i.member)) return reply(i, DENIED);
   const ch = i.options.getChannel('channel') || i.channel;
   const s = { data: { color: COLORS.gold }, channelId: ch.id, channelName: ch.name };
   sessions.set(i.user.id, s);
@@ -79,7 +83,7 @@ async function create(i) {
 }
 
 async function edit(i) {
-  if (!atLeast(i.member, 'Burseg')) return reply(i, 'Only a Burseg or higher can edit embeds.');
+  if (!allowed(i.member)) return reply(i, DENIED);
   const ref = parseLink(i.options.getString('message'));
   if (!ref || ref.guildId !== i.guildId) return reply(i, 'Give me a message link from this server (right-click the message, Copy Message Link).');
   const ch = i.guild.channels.cache.get(ref.channelId);
@@ -93,8 +97,8 @@ async function edit(i) {
 }
 
 const embedCmd = {
-  data: new SlashCommandBuilder().setName('embed').setDescription('Build or edit an embed with a live preview (Burseg+)')
-    .setDefaultMemberPermissions(PF.ManageMessages)
+  data: new SlashCommandBuilder().setName('embed').setDescription('Build or edit an embed with a live preview (owner and Supreme Bashar)')
+    .setDefaultMemberPermissions(PF.Administrator)
     .addSubcommand((s) => s.setName('create').setDescription('Build a new embed')
       .addChannelOption((o) => o.setName('channel').setDescription('Where to post it (default: this channel)')
         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)))
@@ -111,6 +115,7 @@ const expired = (i) => i.reply({ content: 'This editor session has expired. Run 
 export async function embedButton(i) {
   const s = sessions.get(i.user.id);
   if (!s) return expired(i);
+  if (!allowed(i.member)) return i.reply({ content: DENIED, ephemeral: true });
   const action = i.customId.split(':')[1];
   if (['main', 'extra', 'field', 'json'].includes(action)) return i.showModal(modalFor(action, s));
   if (action === 'unfield') { s.data.fields?.pop(); return i.update(view(s)); }
@@ -139,6 +144,7 @@ export async function embedButton(i) {
 export async function embedModal(i) {
   const s = sessions.get(i.user.id);
   if (!s) return expired(i);
+  if (!allowed(i.member)) return i.reply({ content: DENIED, ephemeral: true });
   const kind = i.customId.split(':')[2];
   const v = (k) => i.fields.getTextInputValue(k).trim();
   const d = structuredClone(s.data);   // work on a copy so a rejected edit changes nothing
