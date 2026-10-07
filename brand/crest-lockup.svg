@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1300" width="1024" height="1300"><defs>
+<linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f1d58b"/><stop offset=".5" stop-color="#c79a45"/><stop offset="1" stop-color="#7d5a22"/></linearGradient>
+<linearGradient id="gold2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e3bf6a"/><stop offset="1" stop-color="#9a7230"/></linearGradient>
+<linearGradient id="red" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7d1d17"/><stop offset="1" stop-color="#3e0d0b"/></linearGradient>
+<filter id="grain" x="0" y="0" width="100%" height="100%"><feTurbulence type="fractalNoise" baseFrequency=".9" numOctaves="2" seed="4"/><feColorMatrix values="0 0 0 0 .8  0 0 0 0 .6  0 0 0 0 .3  0 0 0 .22 0"/></filter>
+<clipPath id="sh"><path d="M144 118 H880 V552 C880 742 696 862 512 944 C328 862 144 742 144 552Z"/></clipPath></defs>
+<path d="M122 96 H902 V556 C902 760 706 888 512 972 C318 888 122 760 122 556Z" fill="url(#gold)"/>
+<path d="M144 118 H880 V552 C880 742 696 862 512 944 C328 862 144 742 144 552Z" fill="url(#red)"/>
+<g clip-path="url(#sh)">
+<circle cx="512" cy="470" r="360" fill="none" stroke="#c79a45" stroke-opacity=".25" stroke-width="3"/>
+<circle cx="512" cy="470" r="330" fill="none" stroke="#c79a45" stroke-opacity=".15" stroke-width="2"/>
+<polygon points="512.0,140.0 565.4,236.0 655.2,172.7 661.6,282.4 770.0,264.2 728.2,365.9 833.7,396.6 752.0,470.0 833.7,543.4 728.2,574.1 770.0,675.8 661.6,657.6 655.2,767.3 565.4,704.0 512.0,800.0 458.6,704.0 368.8,767.3 362.4,657.6 254.0,675.8 295.8,574.1 190.3,543.4 272.0,470.0 190.3,396.6 295.8,365.9 254.0,264.2 362.4,282.4 368.8,172.7 458.6,236.0" fill="#7d5a22"/>
+<polygon points="578.8,177.5 603.1,280.8 699.0,235.5 676.2,339.1 782.3,339.8 716.7,423.3 812.0,470.0 716.7,516.7 782.3,600.2 676.2,600.9 699.0,704.5 603.1,659.2 578.8,762.5 512.0,680.0 445.2,762.5 420.9,659.2 325.0,704.5 347.8,600.9 241.7,600.2 307.3,516.7 212.0,470.0 307.3,423.3 241.7,339.8 347.8,339.1 325.0,235.5 420.9,280.8 445.2,177.5 512.0,260.0" fill="url(#gold2)" stroke="#3e2a0e" stroke-width="3" stroke-linejoin="miter"/>
+<polygon points="512.0,220.0 550.9,299.4 620.5,244.8 621.1,333.2 707.5,314.1 669.7,394.1 755.7,414.4 687.0,470.0 755.7,525.6 669.7,545.9 707.5,625.9 621.1,606.8 620.5,695.2 550.9,640.6 512.0,720.0 473.1,640.6 403.5,695.2 402.9,606.8 316.5,625.9 354.3,545.9 268.3,525.6 337.0,470.0 268.3,414.4 354.3,394.1 316.5,314.1 402.9,333.2 403.5,244.8 473.1,299.4" fill="#a77b34" stroke="#3e2a0e" stroke-width="3"/>
+<polygon points="512,300 578,320 630,380 636,460 612,550 574,620 512,666 512,666 450,620 412,550 388,460 394,380 446,320 512,300" fill="url(#gold)" stroke="#2c1b08" stroke-width="5" stroke-linejoin="round"/>
+<g fill="#1d1005" stroke="#1d1005" stroke-width="3" stroke-linejoin="round">
+<polygon points="538,426 610,400 604,436 552,456"/>
+<polygon points="486,426 414,400 420,436 472,456"/>
+<polygon points="474,504 550,504 532,554 492,554"/>
+</g>
+<g fill="none" stroke="#2c1b08" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+<path d="M512,320 V500"/>
+<path d="M512,554 V582 M442,574 Q482,608 512,582 Q542,608 582,574"/>
+<path d="M420,362 L472,378 M604,362 L552,378"/>
+<path d="M482,630 L512,656 L542,630"/>
+</g>
+<g fill="#f1d58b"><polygon points="468,770 482,786 468,802 454,786"/><polygon points="512,770 526,786 512,802 498,786"/><polygon points="556,770 570,786 556,802 542,786"/></g>
+<rect width="1024" height="1024" filter="url(#grain)"/>
+</g>
+<path d="M144 118 H880 V552 C880 742 696 862 512 944 C328 862 144 742 144 552Z" fill="none" stroke="#f1d58b" stroke-opacity=".7" stroke-width="2"/><text x="512" y="1130" font-family="Cinzel, 'Trajan Pro', Georgia, 'Times New Roman', serif" font-weight="700" font-size="58" letter-spacing="7" text-anchor="middle" fill="url(#gold)">CHILDREN OF SALUSA</text><text x="512" y="1195" font-family="Cinzel, 'Trajan Pro', Georgia, 'Times New Roman', serif" font-weight="700" font-size="28" letter-spacing="12" text-anchor="middle" fill="#e3bf6a">A  DUNE: AWAKENING  GUILD</text></svg>

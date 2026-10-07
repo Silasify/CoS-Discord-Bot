@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Children of Salusa Blueprint Studio</title>
+<meta name="description" content="Children of Salusa base planner for Dune: Awakening. Design bases in 3D, walk through them, export to JSON. No account needed.">
+<link rel="icon" href="assets/crest.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="top">
+  <a class="brand" href="#home"><img src="assets/crest.svg" alt="" width="28" height="30"> <span>Children of Salusa</span> <small>Blueprint Studio</small></a>
+  <nav>
+    <a href="#home" data-nav="home">Explore</a>
+    <a href="#studio" data-nav="studio">Studio</a>
+    <a href="#guide" data-nav="guide">Guide</a>
+  </nav>
+</header>
+
+<main>
+<!-- HOME / LIBRARY -->
+<section id="view-home" class="view">
+  <div class="hero">
+    <p class="eyebrow">A Dune: Awakening guild</p>
+    <h1>Forge your next base on paper first.</h1>
+    <p>Design bases in 3D, walk through them, then build them in the sand. No account, no sign-in: your blueprint lives in a JSON file that you export and import.</p>
+    <div class="cta">
+      <a class="btn primary" href="#studio">Open the Studio</a>
+      <label class="btn">Import a blueprint<input type="file" id="homeImport" accept=".json,application/json" hidden></label>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <h2>Sample library</h2>
+    <div class="filters">
+      <input id="libSearch" type="search" placeholder="Search blueprints…" aria-label="Search blueprints">
+      <div id="libChips" class="chips"></div>
+      <select id="libSort" aria-label="Sort">
+        <option value="name">Name</option>
+        <option value="pieces">Most pieces</option>
+        <option value="levels">Tallest</option>
+      </select>
+    </div>
+    <div id="libGrid" class="grid"></div>
+    <p id="libEmpty" class="muted" hidden>No blueprints match.</p>
+  </div>
+</section>
+
+<!-- STUDIO -->
+<section id="view-studio" class="view studio" hidden>
+  <aside class="palette">
+    <h3>Tool</h3>
+    <div class="seg three">
+      <button id="toolBuild" class="on" title="B">Build</button>
+      <button id="toolSelect" title="S">Select</button>
+      <button id="toolErase" title="X">Erase</button>
+    </div>
+    <h3>Pieces</h3>
+    <div id="pieceList" class="pieces"></div>
+    <p class="muted small">Right-click removes a piece. Drag to orbit, right-drag to pan, scroll to zoom.</p>
+  </aside>
+
+  <div class="viewport" id="viewport">
+    <canvas id="gl"></canvas>
+    <div class="hud" id="hud">&nbsp;</div>
+    <div class="walkhint" id="walkHint" hidden>Click to look around · WASD move · Shift run · Esc exit</div>
+    <div class="cross" id="cross" hidden></div>
+  </div>
+
+  <aside class="inspector">
+    <h3>Blueprint</h3>
+    <input id="bpName" type="text" maxlength="60" value="Untitled base" aria-label="Blueprint name">
+    <label class="row">Building set
+      <select id="bpSet"></select>
+    </label>
+    <div class="row">Level
+      <div class="stepper"><button id="lvDown" aria-label="Level down">−</button><b id="lvNow">0</b><button id="lvUp" aria-label="Level up">+</button></div>
+    </div>
+    <div class="row"><button id="walkBtn" class="primary">Walk through (F)</button></div>
+    <div class="row">
+      <button id="rotate">Rotate (R)</button>
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+    </div>
+    <div class="row"><button id="clear" class="danger">Clear all</button></div>
+
+    <div id="selPanel" hidden>
+      <h3>Selection <span id="selCount" class="badge">0</span></h3>
+      <div class="movegrid" id="selMove">
+        <span></span><button data-m="0,0,-1" title="North (↑)">↑ N</button><span></span>
+        <button data-m="-1,0,0" title="West (←)">← W</button><button data-m="0,1,0" title="Up (PageUp)">Up</button><button data-m="1,0,0" title="East (→)">E →</button>
+        <span></span><button data-m="0,0,1" title="South (↓)">↓ S</button><button data-m="0,-1,0" title="Down (PageDown)">Down</button>
+      </div>
+      <div class="row"><button id="selRot">Rotate</button><button id="selDup">Duplicate (D)</button><button id="selDel" class="danger">Delete</button></div>
+      <p class="muted small">Shift-click adds to the selection. Arrow keys move it.</p>
+    </div>
+
+    <h3>Save &amp; load</h3>
+    <div class="col">
+      <button id="exportBtn" class="primary">Export JSON file</button>
+      <button id="copyBtn">Copy JSON</button>
+      <label class="btn">Import file<input type="file" id="importFile" accept=".json,application/json" hidden></label>
+      <button id="pasteBtn">Paste JSON…</button>
+    </div>
+    <p class="muted small">Nothing is stored online. Export before you close the tab.</p>
+
+    <h3>Build list <span id="total" class="badge">0</span></h3>
+    <div id="buildList" class="buildlist"></div>
+  </aside>
+</section>
+
+<!-- GUIDE -->
+<section id="view-guide" class="view" hidden>
+  <div class="wrap narrow">
+    <h2>Designer guide</h2>
+    <h3>Controls</h3>
+    <table class="keys">
+      <tr><td>Left click</td><td>Place the selected piece</td></tr>
+      <tr><td>Right click</td><td>Remove the piece under the cursor</td></tr>
+      <tr><td>Left drag / right drag / wheel</td><td>Orbit / pan / zoom</td></tr>
+      <tr><td><kbd>R</kbd></td><td>Rotate floor pieces (ramps, stairs, machines)</td></tr>
+      <tr><td><kbd>[</kbd> <kbd>]</kbd> or PageDown/PageUp</td><td>Change level</td></tr>
+      <tr><td><kbd>1</kbd>–<kbd>9</kbd>, <kbd>0</kbd></td><td>Select a piece</td></tr>
+      <tr><td><kbd>B</kbd> <kbd>S</kbd> <kbd>X</kbd></td><td>Build / Select / Erase tool</td></tr>
+      <tr><td>Select tool</td><td>Click a piece (Shift adds). Arrow keys move, PageUp/PageDown change level, <kbd>R</kbd> rotates, <kbd>D</kbd> duplicates, <kbd>Del</kbd> deletes, <kbd>Esc</kbd> deselects</td></tr>
+      <tr><td><kbd>F</kbd></td><td>Walk-through mode: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> move, mouse looks, <kbd>Shift</kbd> runs, <kbd>Esc</kbd> exits</td></tr>
+      <tr><td><kbd>Ctrl</kbd>+<kbd>Z</kbd> / <kbd>Ctrl</kbd>+<kbd>Y</kbd></td><td>Undo / redo</td></tr>
+    </table>
+    <h3>Snapping</h3>
+    <p>Everything snaps to a grid. Walls, doorways and windows snap to the nearest cell edge, pillars to the nearest cell corner, and foundations, ramps, stairs, roofs and machines to the cell itself. The grid is drawn at the current level.</p>
+    <h3>Saving your work</h3>
+    <p>There are no accounts. Use <b>Export JSON file</b> to save, and <b>Import file</b> or <b>Paste JSON</b> to continue later or share with others. The page warns you if you try to leave with unexported changes.</p>
+    <h3>File format</h3>
+<pre>{
+  "app": "salusa-blueprint",
+  "version": 1,
+  "name": "My base",
+  "set": "fremen",
+  "pieces": [ { "t": "foundation", "x": 0, "y": 0, "z": 0, "r": 0 } ]
+}</pre>
+    <p class="muted">Piece types: foundation, triangle, ramp, stairs, halfstairs, roof, hatch, dome, wall, doorway, window, railing, ladder, pillar, column, machine, light. <code>r</code> is 0–3 (north, east, south, west).</p>
+    
+  </div>
+</section>
+</main>
+<footer class="foot" id="siteFoot"><p>Children of Salusa · Loyalty · Discipline · Unity</p><p class="muted small">Unofficial fan tool, not affiliated with Funcom or Dune Docker. Exports are plans, not game files. Piece sizes are approximations.</p></footer>
+
+<dialog id="pasteDlg">
+  <form method="dialog">
+    <h3>Paste blueprint JSON</h3>
+    <textarea id="pasteText" rows="10" placeholder="{ &quot;app&quot;: &quot;salusa-blueprint&quot;, … }"></textarea>
+    <div class="row end"><button value="cancel">Cancel</button><button id="pasteOk" value="ok" class="primary">Load</button></div>
+  </form>
+</dialog>
+
+<div id="toast" class="toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/BufferGeometryUtils.js"></script>
+<script src="models.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
